@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雙11慶典播音唱盤</title>
+<style>
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: radial-gradient(circle at center, #0a2c4d 0%, #000 100%);
+    color: #fff;
+    text-align: center;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .wheel-container { position: relative; display: inline-block; overflow: visible; }
+
+  .wheel {
+    position: relative;
+    width: 320px; height: 320px; border-radius: 50%;
+    border: 6px solid rgba(255,255,255,0.12);
+    background:
+      radial-gradient(circle at 50% 45%, rgba(255,255,255,0.18), rgba(255,255,255,0) 55%),
+      repeating-radial-gradient(circle at center,
+        rgba(255,255,255,0.08) 0 1px, transparent 1px 4px
+      ),
+      radial-gradient(#141414 0%, #0e0e0e 62%, #0a0a0a 100%);
+    background-blend-mode: screen, normal, normal;
+    box-shadow: 0 14px 40px rgba(0,0,0,.6), inset 0 0 60px rgba(255,255,255,.04);
+    transition: transform 5.2s cubic-bezier(.2,.9,.1,1);
+    overflow: visible;
+  }
+
+  .wheel .rainbow {
+    position: absolute; inset: 0; border-radius: 50%;
+    background: conic-gradient(
+      transparent 0 5deg,
+      #ff7657 5deg 20deg,
+      transparent 20deg 25deg,
+      #ffa14a 25deg 40deg,
+      transparent 40deg 45deg,
+      #ffd166 45deg 60deg,
+      transparent 60deg 65deg,
+      #5ad1c8 65deg 80deg,
+      transparent 80deg 85deg,
+      #7aa5ff 85deg 100deg,
+      transparent 100deg 360deg
+    );
+    -webkit-mask: radial-gradient(circle at center, transparent 0 62%, #000 63% 75%, transparent 76%);
+    mask: radial-gradient(circle at center, transparent 0 62%, #000 63% 75%, transparent 76%);
+    opacity: .95;
+    pointer-events: none;
+  }
+
+  .wheel .label-disc {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 120px; height: 120px; border-radius: 50%;
+    background: radial-gradient(circle at 45% 40%, rgba(255,255,255,.18), rgba(255,255,255,0) 60%),
+      linear-gradient(135deg, #ff9a8b, #ffd56b 35%, #7edbd1 70%, #9aa9ff);
+    box-shadow: inset 0 0 25px rgba(0,0,0,.35);
+  }
+  .wheel .hole {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 14px; height: 14px; border-radius: 50%; background: #fff;
+    box-shadow: 0 0 0 4px #000, inset 0 0 6px rgba(0,0,0,.5);
+  }
+
+  .music-note {
+    position: absolute;
+    font-size: 20px;
+    color: #fff;
+    opacity: 0;
+    animation: floatUp 2.5s ease-out forwards;
+    pointer-events: none;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+  }
+
+  .tonearm {
+    position: absolute;
+    top: -30px;
+    left: 65%;
+    width: 160px;
+    height: 10px;
+    background: linear-gradient(90deg, #ccc 0%, #999 100%);
+    border-radius: 5px;
+    transform-origin: left center;
+    transform: rotate(25deg);
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0,0,0,.6);
+    animation: swing 5s ease-in-out infinite alternate;
+  }
+  .tonearm::after {
+    content: '';
+    position: absolute;
+    right: -8px;
+    top: -5px;
+    width: 16px;
+    height: 20px;
+    background: #222;
+    border-radius: 4px;
+    box-shadow: inset 0 0 4px rgba(255,255,255,.3);
+  }
+
+  @keyframes swing {
+    0% { transform: rotate(20deg); }
+    100% { transform: rotate(30deg); }
+  }
+
+  .button {
+    margin-top: 18px; padding: 10px 20px; background: #1c69ff; color: #fff;
+    border: none; border-radius: 10px; font-size: 16px; cursor: pointer;
+  }
+  .button:hover { background: #4ecdc4; }
+
+  .popup {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none; justify-content: center; align-items: center; z-index: 1000;
+  }
+  .popup-content {
+    background: #fff; color: #333; padding: 20px 30px; border-radius: 12px;
+    text-align: center; box-shadow: 0 0 20px rgba(255,255,255,0.2);
+  }
+  .popup-content button {
+    background: #1c69ff; color: #fff; border: none; padding: 8px 16px;
+    border-radius: 8px; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <h1>雙11慶典播音唱盤</h1>
+  <div class="wheel-container">
+    <div class="tonearm" id="tonearm"></div>
+    <div class="wheel" id="wheel">
+      <div class="rainbow"></div>
+      <div class="label-disc"></div>
+      <div class="hole"></div>
+    </div>
+  </div>
+  <button class="button" id="spin">開始抽獎</button>
+
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <h2>恭喜中獎！</h2>
+      <p id="popup-text"></p>
+      <button id="closePopup">關閉</button>
+    </div>
+  </div>
+
+  <script>
+    const wheel = document.getElementById('wheel');
+    const spinBtn = document.getElementById('spin');
+    const popup = document.getElementById('popup');
+    const popupText = document.getElementById('popup-text');
+    const closePopup = document.getElementById('closePopup');
+    const tonearm = document.getElementById('tonearm');
+
+    const prizes = [
+      { text: '折價1000', chance: 0.005 },
+      { text: '折價600', chance: 0.015 },
+      { text: '折價300', chance: 0.98 },
+      { text: '折價80', chance: 99 }
+    ];
+
+    const sectorAngle = {
+      '折價1000': 45,
+      '折價600': 135,
+      '折價300': 225,
+      '折價80': 315
+    };
+
+    let deg = 0;
+
+    function drawPrize() {
+      const r = Math.random() * 100; let acc = 0;
+      for (const p of prizes) { acc += p.chance; if (r < acc) return p.text; }
+      return prizes[prizes.length - 1].text;
+    }
+
+    function createMusicNote() {
+      const note = document.createElement('div');
+      note.className = 'music-note';
+      note.textContent = ['🎵','🎶'][Math.floor(Math.random()*2)];
+      note.style.left = `${150 + (Math.random()*40 - 20)}px`;
+      note.style.top = `${150 + (Math.random()*40 - 20)}px`;
+      wheel.appendChild(note);
+      setTimeout(() => note.remove(), 2500);
+    }
+
+    spinBtn.addEventListener('click', () => {
+      const prize = drawPrize();
+      const center = sectorAngle[prize] || 315;
+      const extraSpins = 6 + Math.floor(Math.random() * 3);
+      const jitter = (Math.random() * 20 - 10);
+      const target = 360 * extraSpins + (360 - (center + jitter));
+      deg += target; wheel.style.transform = `rotate(${deg}deg)`;
+
+      spinBtn.disabled = true;
+      tonearm.style.animation = 'swing 0.3s ease-in-out 2 alternate';
+
+      const noteInterval = setInterval(createMusicNote, 300);
+
+      setTimeout(() => {
+        clearInterval(noteInterval);
+        popupText.textContent = `🎉 恭喜獲得：${prize}`;
+        popup.style.display = 'flex';
+        spinBtn.disabled = false;
+        tonearm.style.animation = 'swing 5s ease-in-out infinite alternate';
+      }, 5200);
+    });
+
+    closePopup.addEventListener('click', () => {
+      popup.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
