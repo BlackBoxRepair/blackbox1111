@@ -166,8 +166,8 @@
     const prizes = [
       { text: '折價1000', chance: 0.005 },
       { text: '折價600', chance: 0.015 },
-      { text: '折價300', chance: 0.98 },
-      { text: '折價80', chance: 99 }
+      { text: '折價300', chance: 1.08 },
+      { text: '折價80', chance: 98.9 }
     ];
 
     const sectorAngle = {
@@ -210,7 +210,7 @@
 
       setTimeout(() => {
         clearInterval(noteInterval);
-        popupText.textContent = `🎉 恭喜獲得：${prize}`;
+        popupText.textContent = `🎉 恭喜獲得：${prize}元`;
         popup.style.display = 'flex';
         spinBtn.disabled = false;
         tonearm.style.animation = 'swing 5s ease-in-out infinite alternate';
