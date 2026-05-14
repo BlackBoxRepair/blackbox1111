@@ -1,225 +1,464 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>雙11慶典播音唱盤</title>
-<style>
-  body {
-    font-family: 'Noto Sans TC', sans-serif;
-    background: radial-gradient(circle at center, #0a2c4d 0%, #000 100%);
-    color: #fff;
-    text-align: center;
-    height: 100vh;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  .wheel-container { position: relative; display: inline-block; overflow: visible; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黑盒子維修中心 - 官方網站</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 核心樣式與顏色定義 --- */
+        :root {
+            --primary-black: #1a1a1a;
+            --secondary-black: #2d2d2d;
+            --gold-accent: #d4af37;
+            --bg-light: #f9f9f9;
+            --text-dark: #333333;
+            --text-muted: #999999;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
 
-  .wheel {
-    position: relative;
-    width: 320px; height: 320px; border-radius: 50%;
-    border: 6px solid rgba(255,255,255,0.12);
-    background:
-      radial-gradient(circle at 50% 45%, rgba(255,255,255,0.18), rgba(255,255,255,0) 55%),
-      repeating-radial-gradient(circle at center,
-        rgba(255,255,255,0.08) 0 1px, transparent 1px 4px
-      ),
-      radial-gradient(#141414 0%, #0e0e0e 62%, #0a0a0a 100%);
-    background-blend-mode: screen, normal, normal;
-    box-shadow: 0 14px 40px rgba(0,0,0,.6), inset 0 0 60px rgba(255,255,255,.04);
-    transition: transform 5.2s cubic-bezier(.2,.9,.1,1);
-    overflow: visible;
-  }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
 
-  .wheel .rainbow {
-    position: absolute; inset: 0; border-radius: 50%;
-    background: conic-gradient(
-      transparent 0 5deg,
-      #ff7657 5deg 20deg,
-      transparent 20deg 25deg,
-      #ffa14a 25deg 40deg,
-      transparent 40deg 45deg,
-      #ffd166 45deg 60deg,
-      transparent 60deg 65deg,
-      #5ad1c8 65deg 80deg,
-      transparent 80deg 85deg,
-      #7aa5ff 85deg 100deg,
-      transparent 100deg 360deg
-    );
-    -webkit-mask: radial-gradient(circle at center, transparent 0 62%, #000 63% 75%, transparent 76%);
-    mask: radial-gradient(circle at center, transparent 0 62%, #000 63% 75%, transparent 76%);
-    opacity: .95;
-    pointer-events: none;
-  }
+        html {
+            scroll-behavior: smooth;
+        }
 
-  .wheel .label-disc {
-    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-    width: 120px; height: 120px; border-radius: 50%;
-    background: radial-gradient(circle at 45% 40%, rgba(255,255,255,.18), rgba(255,255,255,0) 60%),
-      linear-gradient(135deg, #ff9a8b, #ffd56b 35%, #7edbd1 70%, #9aa9ff);
-    box-shadow: inset 0 0 25px rgba(0,0,0,.35);
-  }
-  .wheel .hole {
-    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-    width: 14px; height: 14px; border-radius: 50%; background: #fff;
-    box-shadow: 0 0 0 4px #000, inset 0 0 6px rgba(0,0,0,.5);
-  }
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
 
-  .music-note {
-    position: absolute;
-    font-size: 20px;
-    color: #fff;
-    opacity: 0;
-    animation: floatUp 2.5s ease-out forwards;
-    pointer-events: none;
-  }
-  @keyframes floatUp {
-    0% { transform: translateY(0) scale(1); opacity: 1; }
-    100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
-  }
+        /* --- 上排固定導覽列 (Top Header) --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background-color: #ffffff;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            z-index: 1000;
+        }
 
-  .tonearm {
-    position: absolute;
-    top: -30px;
-    left: 65%;
-    width: 160px;
-    height: 10px;
-    background: linear-gradient(90deg, #ccc 0%, #999 100%);
-    border-radius: 5px;
-    transform-origin: left center;
-    transform: rotate(25deg);
-    z-index: 10;
-    box-shadow: 0 2px 4px rgba(0,0,0,.6);
-    animation: swing 5s ease-in-out infinite alternate;
-  }
-  .tonearm::after {
-    content: '';
-    position: absolute;
-    right: -8px;
-    top: -5px;
-    width: 16px;
-    height: 20px;
-    background: #222;
-    border-radius: 4px;
-    box-shadow: inset 0 0 4px rgba(255,255,255,.3);
-  }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-  @keyframes swing {
-    0% { transform: rotate(20deg); }
-    100% { transform: rotate(30deg); }
-  }
+        .menu-toggle {
+            font-size: 24px;
+            color: var(--primary-black);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+            transition: var(--transition);
+        }
+        
+        .menu-toggle:hover {
+            color: var(--gold-accent);
+        }
 
-  .button {
-    margin-top: 18px; padding: 10px 20px; background: #1c69ff; color: #fff;
-    border: none; border-radius: 10px; font-size: 16px; cursor: pointer;
-  }
-  .button:hover { background: #4ecdc4; }
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
 
-  .popup {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: none; justify-content: center; align-items: center; z-index: 1000;
-  }
-  .popup-content {
-    background: #fff; color: #333; padding: 20px 30px; border-radius: 12px;
-    text-align: center; box-shadow: 0 0 20px rgba(255,255,255,0.2);
-  }
-  .popup-content button {
-    background: #1c69ff; color: #fff; border: none; padding: 8px 16px;
-    border-radius: 8px; cursor: pointer;
-  }
-</style>
+        .logo-img {
+            height: 28px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: var(--primary-black);
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 18px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--gold-accent);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--secondary-black);
+            color: #fff;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .nav-btn:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* --- 側邊展開選單 (森息日常風格) --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 320px;
+            height: 100%;
+            background-color: #ffffff;
+            z-index: 2000;
+            transition: var(--transition);
+            padding: 24px;
+            box-shadow: 5px 0 25px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-logo {
+            height: 24px;
+            width: auto;
+        }
+
+        .close-btn {
+            font-size: 20px;
+            color: #333333;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 5px;
+        }
+
+        .close-btn:hover {
+            color: var(--gold-accent);
+        }
+
+        .sidebar-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .menu-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .group-title {
+            font-size: 13px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            padding-left: 8px;
+        }
+
+        .menu-item {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 8px 8px;
+            border-radius: 6px;
+            transition: var(--transition);
+            display: block;
+        }
+
+        .menu-item:hover {
+            color: var(--gold-accent);
+            background-color: #fcfbf7;
+            padding-left: 14px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            z-index: 1500;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* --- 網頁主要內容區 --- */
+        main {
+            margin-top: 70px;
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: calc(100vh - 180px);
+        }
+
+        /* --- 🛠 服務流程網頁切換樣式區 --- */
+        .process-section {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 40px 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            text-align: center;
+        }
+
+        .process-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--primary-black);
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        /* 三個切換按鈕排版 */
+        .process-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: var(--primary-black);
+            color: #ffffff;
+            border: 2px solid var(--primary-black);
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .tab-btn:hover {
+            background-color: var(--secondary-black);
+            border-color: var(--secondary-black);
+            transform: translateY(-2px);
+        }
+
+        /* 啟用狀態的按鈕 (黑底金邊金字) */
+        .tab-btn.active {
+            background-color: var(--primary-black);
+            color: var(--gold-accent);
+            border-color: var(--gold-accent);
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        /* 圖片顯示容器 */
+        .process-display {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .process-img {
+            width: 100%;
+            height: auto;
+            display: none; /* 預設先隱藏，交由 JS 控制 */
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        /* 顯示圖片時的動畫 */
+        .process-img.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 頁尾 */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
-  <img src="original.webp" alt="Simmpo Logo" style="width:160px; margin-bottom:10px;">
-  <h1>雙11慶典播音唱盤</h1>
-  <div class="wheel-container">
-    <div class="tonearm" id="tonearm"></div>
-    <div class="wheel" id="wheel">
-      <div class="rainbow"></div>
-      <div class="label-disc"></div>
-      <div class="hole"></div>
-    </div>
-  </div>
-  <button class="button" id="spin">開始抽獎</button>
 
-  <div class="popup" id="popup">
-    <div class="popup-content">
-      <h2>恭喜中獎！</h2>
-      <p id="popup-text"></p>
-      <button id="closePopup">關閉</button>
-    </div>
-  </div>
+    <header>
+        <div class="header-left">
+            <button class="menu-toggle" id="openMenu" aria-label="開啟選單">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="#" class="logo-container">
+                <img src="site logo.png" alt="Black Box Logo" class="logo-img">
+            </a>
+        </div>
+        <div class="header-right">
+            <a href="https://blackboxrepair.github.io/membership/" class="nav-btn" data-tooltip="會員中心">
+                <i class="fa-solid fa-user"></i>
+            </a>
+            <a href="https://blackboxrepair.github.io/bookingonline/" class="nav-btn" data-tooltip="線上預約">
+                <i class="fa-solid fa-calendar-check"></i>
+            </a>
+        </div>
+    </header>
 
-  <script>
-    const wheel = document.getElementById('wheel');
-    const spinBtn = document.getElementById('spin');
-    const popup = document.getElementById('popup');
-    const popupText = document.getElementById('popup-text');
-    const closePopup = document.getElementById('closePopup');
-    const tonearm = document.getElementById('tonearm');
+    <div class="overlay" id="overlay"></div>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-brand">
+                <img src="site logo.png" alt="Logo" class="sidebar-logo">
+            </div>
+            <button class="close-btn" id="closeMenu" aria-label="關閉選單">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-content">
+            <div class="menu-group">
+                <a href="#" class="menu-item" style="font-weight: 500;">首頁</a>
+            </div>
 
-    const prizes = [
-      { text: '折價1000', chance: 0.005 },
-      { text: '折價600', chance: 0.015 },
-      { text: '折價300', chance: 1.08 },
-      { text: '折價80', chance: 98.9 }
-    ];
+            <div class="menu-group">
+                <div class="group-title">服務項目</div>
+                <a href="#process" class="menu-item">服務流程</a>
+                <a href="#prices" class="menu-item">價格查詢</a>
+            </div>
 
-    const sectorAngle = {
-      '折價1000': 45,
-      '折價600': 135,
-      '折價300': 225,
-      '折價80': 315
-    };
+            <div class="menu-group">
+                <div class="group-title">實作紀錄</div>
+                <a href="#cases" class="menu-item">維修案例</a>
+            </div>
 
-    let deg = 0;
+            <div class="menu-group">
+                <div class="group-title">專屬帳號</div>
+                <a href="https://blackboxrepair.github.io/membership/" class="menu-item">會員中心</a>
+                <a href="#locations" class="menu-item">服務站點</a>
+            </div>
+        </div>
+    </nav>
 
-    function drawPrize() {
-      const r = Math.random() * 100; let acc = 0;
-      for (const p of prizes) { acc += p.chance; if (r < acc) return p.text; }
-      return prizes[prizes.length - 1].text;
-    }
+    <main>
+        
+        <section id="process" class="process-section">
+            <h2 class="process-title">服務流程</h2>
+            
+            <div class="process-tabs">
+                <button class="tab-btn active" onclick="switchProcess('phone')">手機維修</button>
+                <button class="tab-btn" onclick="switchProcess('notebook')">筆電維修</button>
+                <button class="tab-btn" onclick="switchProcess('data')">資料救援</button>
+            </div>
 
-    function createMusicNote() {
-      const note = document.createElement('div');
-      note.className = 'music-note';
-      note.textContent = ['🎵','🎶'][Math.floor(Math.random()*2)];
-      note.style.left = `${150 + (Math.random()*40 - 20)}px`;
-      note.style.top = `${150 + (Math.random()*40 - 20)}px`;
-      wheel.appendChild(note);
-      setTimeout(() => note.remove(), 2500);
-    }
+            <div class="process-display">
+                <img src="phone process.png" id="phone-img" alt="手機維修流程" class="process-img active">
+                <img src="notebook process.png" id="notebook-img" alt="筆電維修流程" class="process-img">
+                <img src="data process.png" id="data-img" alt="資料救援流程" class="process-img">
+            </div>
+        </section>
 
-    spinBtn.addEventListener('click', () => {
-      const prize = drawPrize();
-      const center = sectorAngle[prize] || 315;
-      const extraSpins = 6 + Math.floor(Math.random() * 3);
-      const jitter = (Math.random() * 20 - 10);
-      const target = 360 * extraSpins + (360 - (center + jitter));
-      deg += target; wheel.style.transform = `rotate(${deg}deg)`;
+    </main>
 
-      spinBtn.disabled = true;
-      tonearm.style.animation = 'swing 0.3s ease-in-out 2 alternate';
+    <footer>
+        <p>&copy; 2026 BLACK BOX 維修中心. All Rights Reserved.</p>
+    </footer>
 
-      const noteInterval = setInterval(createMusicNote, 300);
+    <script>
+        // --- 側邊選單控制 ---
+        const openMenuBtn = document.getElementById('openMenu');
+        const closeMenuBtn = document.getElementById('closeMenu');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const sidebarLinks = document.querySelectorAll('.sidebar-content a');
 
-      setTimeout(() => {
-        clearInterval(noteInterval);
-        popupText.textContent = `🎉 恭喜獲得：${prize}元`;
-        popup.style.display = 'flex';
-        spinBtn.disabled = false;
-        tonearm.style.animation = 'swing 5s ease-in-out infinite alternate';
-      }, 5200);
-    });
+        function toggleMenu() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
 
-    closePopup.addEventListener('click', () => {
-      popup.style.display = 'none';
-    });
-  </script>
+        openMenuBtn.addEventListener('click', toggleMenu);
+        closeMenuBtn.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+        });
+
+        // --- 🛠 服務流程切換邏輯 ---
+        function switchProcess(type) {
+            // 1. 移除所有按鈕的 active 狀態
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // 2. 移除所有圖片的 active 狀態
+            const images = document.querySelectorAll('.process-img');
+            images.forEach(img => img.classList.remove('active'));
+
+            // 3. 幫當前點擊的按鈕加上 active
+            // 透過事件觸發來源找到對應按鈕
+            const clickedBtn = event.currentTarget;
+            clickedBtn.classList.add('active');
+
+            // 4. 顯示對應的圖片並觸發漸變動畫
+            const targetImg = document.getElementById(`${type}-img`);
+            targetImg.classList.add('active');
+        }
+    </script>
 </body>
 </html>
