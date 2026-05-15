@@ -24,7 +24,7 @@
 
         /* --- 導覽列 --- */
         header {
-            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+            position: fixed; top: 0; left: 0; width: 100%; height: 75px; /* 稍微拉高 5px 讓大 Logo 有呼吸空間 */
             background-color: #ffffff; box-shadow: var(--shadow);
             display: flex; justify-content: space-between; align-items: center;
             padding: 0 24px; z-index: 1000;
@@ -32,8 +32,8 @@
         .header-left { display: flex; align-items: center; gap: 15px; }
         .menu-toggle { font-size: 24px; color: var(--primary-black); cursor: pointer; background: none; border: none; }
         
-        /* 修改：網站上排 Logo 圖片放大一點點 */
-        .logo-img { height: 34px; width: auto; object-fit: contain; }
+        /* 修改：網站上排 Logo 再度放大 */
+        .logo-img { height: 48px; width: auto; object-fit: contain; display: block; }
 
         .header-right { display: flex; gap: 15px; }
         .nav-btn {
@@ -54,8 +54,8 @@
         .sidebar.active { left: 0; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #f0f0f0; }
         
-        /* 修改：左側選單上方 Logo 圖片放大一點點 */
-        .sidebar-logo { height: 30px; width: auto; object-fit: contain; }
+        /* 修改：左側選單上方 Logo 再度放大 */
+        .sidebar-logo { height: 44px; width: auto; object-fit: contain; display: block; }
         
         .close-btn { font-size: 20px; background: none; border: none; cursor: pointer; }
 
@@ -70,7 +70,7 @@
 
         /* --- 頁面內容切換核心 --- */
         main { 
-            margin-top: 70px; 
+            margin-top: 75px; /* 配合導覽列高度同步微調 */
             padding: 5px 20px 40px 20px; 
             max-width: 1200px; 
             margin-left: auto; 
@@ -257,8 +257,8 @@
                 <h2 class="page-header">服務流程</h2>
                 <div class="process-tabs">
                     <button class="tab-btn active" onclick="changeProcessImg('phone', this)">手機維修</button>
-                    <button class="tab-btn" onclick="changeImg('notebook', this)">筆電維修</button>
-                    <button class="tab-btn" onclick="changeImg('data', this)">資料救援</button>
+                    <button class="tab-btn" onclick="changeProcessImg('notebook', this)">筆電維修</button>
+                    <button class="tab-btn" onclick="changeProcessImg('data', this)">資料救援</button>
                 </div>
                 <div class="img-box">
                     <img src="phone process.png" id="img-process-phone" class="display-img active">
