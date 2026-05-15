@@ -42,11 +42,11 @@
         }
         .nav-btn:hover { background-color: var(--gold-accent); transform: translateY(-2px); }
 
-        /* --- 側邊選單 (已縮窄寬度) --- */
+        /* --- 側邊選單 (已再度縮窄至 220px) --- */
         .sidebar {
             position: fixed; top: 0; 
-            left: -260px; /* 修改：配合寬度調整隱藏定位 */
-            width: 260px; /* 修改：從 320px 縮窄至 260px */
+            left: -220px; /* 修改：配合寬度調整隱藏定位 */
+            width: 220px; /* 修改：從 260px 再度縮窄至 220px */
             height: 100%;
             background-color: #ffffff; z-index: 2000; transition: var(--transition);
             padding: 24px; box-shadow: 5px 0 25px rgba(0,0,0,0.05);
@@ -54,10 +54,11 @@
         }
         .sidebar.active { left: 0; }
         
-        /* 修改：移除打叉符號後的頂部區塊排版調整 */
+        /* 修改：Logo 改為靠左對齊並留出舒適的微幅邊距 */
         .sidebar-header { 
             display: flex; 
-            justify-content: center; /* 讓 Logo 置中呈現，視覺更平衡 */
+            justify-content: flex-start; /* 修改：由 center 改為靠左對齊 */
+            padding-left: 8px; /* 新增：讓圖片與下方文字標籤對齊一致 */
             padding-bottom: 20px; 
             margin-bottom: 20px; 
             border-bottom: 1px solid #f0f0f0; 
@@ -227,7 +228,7 @@
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <img src="site logo.png" class="sidebar-logo">
-            </div>
+        </div>
         <div class="sidebar-content">
             <div class="menu-group">
                 <div class="menu-item" onclick="navigateTo('home')">首頁</div>
@@ -329,7 +330,6 @@
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
 
-        // 選單開關 (已移除關閉按鈕事件，僅由遮罩控制)
         document.getElementById('openMenu').onclick = () => { sidebar.classList.add('active'); overlay.classList.add('active'); };
         overlay.onclick = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); };
 
