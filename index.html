@@ -31,7 +31,9 @@
         }
         .header-left { display: flex; align-items: center; gap: 15px; }
         .menu-toggle { font-size: 24px; color: var(--primary-black); cursor: pointer; background: none; border: none; }
-        .logo-img { height: 28px; width: auto; object-fit: contain; }
+        
+        /* 修改：網站上排 Logo 圖片放大一點點 */
+        .logo-img { height: 34px; width: auto; object-fit: contain; }
 
         .header-right { display: flex; gap: 15px; }
         .nav-btn {
@@ -51,7 +53,10 @@
         }
         .sidebar.active { left: 0; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #f0f0f0; }
-        .sidebar-logo { height: 24px; }
+        
+        /* 修改：左側選單上方 Logo 圖片放大一點點 */
+        .sidebar-logo { height: 30px; width: auto; object-fit: contain; }
+        
         .close-btn { font-size: 20px; background: none; border: none; cursor: pointer; }
 
         .sidebar-content { display: flex; flex-direction: column; gap: 24px; }
@@ -134,17 +139,16 @@
         .diamond-row {
             display: flex;
             justify-content: center;
-            gap: 32px; /* 隨按鈕放大調整水平間距 */
+            gap: 32px; 
         }
 
         .diamond-row.bottom {
-            margin-top: -12px; /* 隨按鈕放大調整垂直交錯縫隙 */
+            margin-top: -12px; 
         }
 
-        /* 修改：菱形按鈕稍微放大 */
         .diamond-btn {
-            width: 50px;  /* 從 44px 稍微放大至 50px */
-            height: 50px; /* 從 44px 稍微放大至 50px */
+            width: 50px;  
+            height: 50px; 
             background-color: var(--primary-black);
             transform: rotate(45deg);
             display: flex;
@@ -156,7 +160,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        /* 內容與 Icon 的反轉與尺寸設定 */
         .diamond-btn .btn-content {
             transform: rotate(-45deg); 
             display: flex;
@@ -171,7 +174,6 @@
             font-size: 24px; 
         }
 
-        /* 專屬繪製 Apple Watch SVG 顏色控制 */
         .diamond-btn svg {
             width: 24px;
             height: 24px;
@@ -255,8 +257,8 @@
                 <h2 class="page-header">服務流程</h2>
                 <div class="process-tabs">
                     <button class="tab-btn active" onclick="changeProcessImg('phone', this)">手機維修</button>
-                    <button class="tab-btn" onclick="changeProcessImg('notebook', this)">筆電維修</button>
-                    <button class="tab-btn" onclick="changeProcessImg('data', this)">資料救援</button>
+                    <button class="tab-btn" onclick="changeImg('notebook', this)">筆電維修</button>
+                    <button class="tab-btn" onclick="changeImg('data', this)">資料救援</button>
                 </div>
                 <div class="img-box">
                     <img src="phone process.png" id="img-process-phone" class="display-img active">
